@@ -29,6 +29,12 @@ jobs:
     - name: Install Dependencies
       run: npm install
     
+    - name: Create www folder and copy files
+      run: |
+        mkdir -p www
+        cp forest-app.html www/index.html
+        cp forest-app.js www/forest-app.js
+    
     - name: Add Android Platform
       run: npx cap add android
     
