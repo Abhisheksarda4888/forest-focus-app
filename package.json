@@ -1,0 +1,43 @@
+{
+  "name": "forest-focus-app",
+  "version": "1.0.0",
+  "description": "Forest Focus - Grow trees while you focus on your work",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm install",
+    "sync": "npx cap sync",
+    "sync:android": "npx cap sync android",
+    "open:android": "npx cap open android",
+    "build:android": "cd android && chmod +x gradlew && ./gradlew assembleDebug",
+    "build:android:release": "cd android && chmod +x gradlew && ./gradlew assembleRelease",
+    "build:clean": "cd android && ./gradlew clean",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "focus",
+    "productivity",
+    "timer",
+    "forest",
+    "concentration"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/core": "^5.7.0",
+    "@capacitor/app": "^5.0.7",
+    "@capacitor/haptics": "^5.0.7",
+    "@capacitor/keyboard": "^5.0.7",
+    "@capacitor/screen-reader": "^5.0.7",
+    "@capacitor/status-bar": "^5.0.7"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^5.7.0",
+    "@capacitor/android": "^5.7.0",
+    "@capacitor/ios": "^5.7.0"
+  },
+  "browserslist": [
+    "last 15 versions",
+    "> 1%",
+    "ie 11"
+  ]
+}

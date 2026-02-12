@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Forest Focus - Grow While You Focus</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2d5016;
+            --secondary: #52b788;
+            --accent: #74c69d;
+            --dark-bg: #1a1a2e;
+            --dark-card: #16213e;
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --text-dark: #1a1a2e;
+            --text-light: #f8f9fa;
+            --success: #52b788;
+            --warning: #f4a261;
+            --danger: #e76f51;
+        }
+
+        html {
+            --is-dark: 1;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+
+        /* ============ HEADER ============ */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        /* ============ MAIN CONTAINER ============ */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* ============ FOCUS SECTION (LEFT) ============ */
+        .focus-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .focus-card {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .focus-card {
+            background: var(--light-card);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .focus-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(82,183,136,0.2);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        /* ============ TREE ANIMATION SECTION ============ */
+        .tree-container {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, rgba(45,80,22,0.1) 0%, transparent 100%);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        body.light-mode .tree-container {
+            background: linear-gradient(180deg, rgba(45,80,22,0.05) 0%, transparent 100%);
+        }
+
+        .tree-svg {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 10px 20px rgba(82,183,136,0.3));
+        }
+
+        .tree-level {
+            font-size: 0.9em;
+            color: var(--accent);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .tree-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        /* ============ SESSION SELECT ============ */
+        .session-selector {
+            background: rgba(82,183,136,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        body.light-mode .session-selector {
+            background: rgba(82,183,136,0.05);
+        }
+
+        .session-label {
+            font-size: 0.85em;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .session-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .session-btn {
+            padding: 12px;
+            border: 2px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .session-btn:hover {
+            background: var(--accent);
+            color: var(--dark-bg);
+        }
+
+        .session-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        /* ============ TIMER SECTION ============ */
+        .timer-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .timer-mode {
+            font-size: 0.8em;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 4em;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 20px 0;
+            text-shadow: 0 2px 10px rgba(82,183,136,0.3);
+            letter-spacing: 5px;
+        }
+
+        .timer-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(82,183,136,0.2);
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: rgba(231,111,81,0.2);
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* ============ RIGHT SIDEBAR ============ */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ============ STATS SECTION ============ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: var(--dark-card);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border-top: 3px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .stat-box {
+            background: var(--light-card);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ============ MODAL ============ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark-card);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        body.light-mode .modal-content {
+            background: var(--light-card);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--accent);
+        }
+
+        /* ============ TABS ============ */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid rgba(82,183,136,0.2);
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tab-btn.active {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ============ SCROLLBAR ============ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(82,183,136,0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px;
+            }
+
+            .header-title {
+                font-size: 1.3em;
+            }
+
+            .container {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .focus-card {
+                padding: 20px;
+            }
+
+            .timer-display {
+                font-size: 3em;
+                letter-spacing: 3px;
+            }
+
+            .timer-controls {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .session-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .card-title {
+                font-size: 1.2em;
+            }
+
+            .stat-value {
+                font-size: 1.5em;
+            }
+
+            .tree-svg {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-controls {
+                gap: 10px;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1em;
+            }
+
+            .timer-display {
+                font-size: 2.5em;
+                letter-spacing: 2px;
+            }
+
+            .timer-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .focus-card {
+                padding: 15px;
+            }
+
+            .card-title {
+                font-size: 1em;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            header {
+                padding: 12px;
+            }
+        }
+
+        /* ============ ANIMATIONS ============ */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes grow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .growing {
+            animation: grow 1s ease-in-out infinite;
+        }
+
+        /* ============ INPUT FIELDS ============ */
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(82,183,136,0.1);
+            border: 2px solid var(--accent);
+            color: var(--text-light);
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode input,
+        body.light-mode textarea,
+        body.light-mode select {
+            background: rgba(82,183,136,0.05);
+            color: var(--text-dark);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: rgba(82,183,136,0.2);
+        }
+
+        /* ============ NOTIFICATION ============ */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            z-index: 999;
+        }
+
+        .notification.show {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-title">
+            <i class="fas fa-tree"></i> Forest Focus
+        </div>
+        <div class="header-controls">
+            <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- LEFT SECTION: FOCUS & TIMER -->
+        <div class="focus-section">
+            <!-- TREE DISPLAY -->
+            <div class="focus-card">
+                <div class="tree-container">
+                    <svg class="tree-svg" id="treeSVG" viewBox="0 0 200 200">
+                        <!-- Tree will be drawn here -->
+                    </svg>
+                    <div class="tree-level" id="treeLevel">Level 1</div>
+                    <div class="tree-name" id="treeName">Sapling</div>
+                </div>
+            </div>
+
+            <!-- SESSION SELECTOR -->
+            <div class="focus-card">
+                <div class="session-selector">
+                    <div class="session-label">Session Type</div>
+                    <div class="session-buttons">
+                        <button class="session-btn active" data-session="study">📚 Study</button>
+                        <button class="session-btn" data-session="work">💼 Work</button>
+                        <button class="session-btn" data-session="creative">🎨 Creative</button>
+                        <button class="session-btn" data-session="exercise">💪 Exercise</button>
+                    </div>
+                </div>
+
+                <!-- TIMER -->
+                <div class="timer-section">
+                    <div class="timer-mode" id="timerMode">Timer Mode</div>
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    
+                    <div class="timer-controls">
+                        <button class="control-btn btn-primary" id="startBtn" onclick="startSession()">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                        <button class="control-btn btn-secondary" id="pauseBtn" onclick="pauseSession()" style="display: none;">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="control-btn btn-danger" id="resetBtn" onclick="resetSession()">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK ACTIONS -->
+            <div class="focus-card">
+                <div class="card-title">⚡ Quick Actions</div>
+                <button class="control-btn btn-primary" style="margin-bottom: 10px;" onclick="openModal('scheduleModal')">
+                    <i class="fas fa-calendar"></i> Schedule Session
+                </button>
+                <button class="control-btn btn-primary" onclick="openModal('settingsModal')">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </div>
+
+        <!-- RIGHT SECTION: STATS & DASHBOARD -->
+        <div class="sidebar">
+            <!-- STATS -->
+            <div class="focus-card">
+                <div class="card-title">📊 Today's Stats</div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" id="todayFocusTime">0h 0m</div>
+                        <div class="stat-label">Focus Time</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="todaySessions">0</div>
+                        <div class="stat-label">Sessions</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalTreesGrown">0</div>
+                        <div class="stat-label">Trees Grown</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="forestCount">0</div>
+                        <div class="stat-label">In Forest</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS: NOTES, HISTORY, SCHEDULE -->
+            <div class="focus-card">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'notes')">📝 Notes</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'history')">📱 Apps Log</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'schedule')">📅 Schedule</button>
+                </div>
+
+                <!-- NOTES TAB -->
+                <div id="notes" class="tab-content active">
+                    <textarea id="notesInput" placeholder="Write your session notes here..." style="height: 150px;"></textarea>
+                    <button class="control-btn btn-primary" onclick="saveNotes()">
+                        <i class="fas fa-save"></i> Save Notes
+                    </button>
+                </div>
+
+                <!-- APPS LOG TAB -->
+                <div id="history" class="tab-content">
+                    <div id="appsLog" style="max-height: 200px; overflow-y: auto;">
+                        <p style="color: var(--accent); text-align: center;">No apps detected yet</p>
+                    </div>
+                </div>
+
+                <!-- SCHEDULE TAB -->
+                <div id="schedule" class="tab-content">
+                    <div id="scheduleList" style="max-height: 200px; overflow-y: auto;">
+                        <p style="color: var(--accent); text-align: center;">No scheduled sessions</p>
+                    </div>
+                    <button class="control-btn btn-primary" style="margin-top: 10px;" onclick="openModal('scheduleModal')">
+                        <i class="fas fa-plus"></i> Add Schedule
+                    </button>
+                </div>
+            </div>
+
+            <!-- ACHIEVEMENTS -->
+            <div class="focus-card">
+                <div class="card-title">🏆 Achievements</div>
+                <div id="achievementsList" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <!-- Achievements will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <!-- Schedule Modal -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('scheduleModal')">&times;</span>
+            <h2 style="color: var(--secondary); margin-bottom: 20px;">📅 Schedule Session</h2>
+            <div>
+                <label>Session Type</label>
+                <select id="scheduleType">
+                    <option value="study">📚 Study</option>
+                    <option value="work">💼 Work</option>
+                    <option value="creative">🎨 Creative</option>
+                    <option value="exercise">💪 Exercise</option>
+                </select>
+
+                <label>Time</label>
+                <input type="time" id="scheduleTime">
+
+                <label>Days</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <label><input type="checkbox" value="Mon"> Mon</label>
+                    <label><input type="checkbox" value="Tue"> Tue</label>
+                    <label><input type="checkbox" value="Wed"> Wed</label>
+                    <label><input type="checkbox" value="Thu"> Thu</label>
+                    <label><input type="checkbox" value="Fri"> Fri</label>
+                    <label><input type="checkbox" value="Sat"> Sat</label>
+                </div>
+
+                <button class="control-btn btn-primary" style="margin-top: 20px;" onclick="saveSchedule()">
+                    <i class="fas fa-save"></i> Save Schedule
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('settingsModal')">&times;</span>
+            <h2 style="color: var(--secondary); margin-bottom: 20px;">⚙️ Settings</h2>
+            <div>
+                <label>Focus Session Duration (minutes)</label>
+                <input type="number" id="focusDuration" value="25" min="1" max="120">
+
+                <label>Break Duration (minutes)</label>
+                <input type="number" id="breakDuration" value="5" min="1" max="30">
+
+                <label>Notification After (hours)</label>
+                <input type="number" id="notificationTime" value="2" min="1" max="10">
+
+                <label>Sound Notifications</label>
+                <select id="soundEnabled">
+                    <option value="true">Enabled</option>
+                    <option value="false">Disabled</option>
+                </select>
+
+                <button class="control-btn btn-primary" style="margin-top: 20px;" onclick="saveSettings()">
+                    <i class="fas fa-save"></i> Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Notification</span>
+    </div>
+
+    <script src="forest-app.js"></script>
+</body>
+</html>

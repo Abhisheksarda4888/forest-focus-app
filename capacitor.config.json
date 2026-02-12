@@ -1,0 +1,30 @@
+{
+  "appId": "com.forestfocus.app",
+  "appName": "Forest Focus",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "minVersion": 21,
+    "flavor": "prod"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "launchFadeOutDuration": 500,
+      "backgroundColor": "#1a1a2e",
+      "textColor": "#74c69d",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "dark",
+      "backgroundColor": "#1a1a2e"
+    },
+    "Keyboard": {
+      "resize": "ionic",
+      "hideFormAccessoryBar": false
+    }
+  }
+}
